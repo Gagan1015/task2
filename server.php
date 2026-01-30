@@ -1,0 +1,21 @@
+<?php
+
+/**
+ * Laravel - Router script for PHP Built-in Server
+ * 
+ * This file handles routing for the PHP built-in development server.
+ * It serves static files directly and routes other requests to index.php.
+ */
+
+$uri = urldecode(
+    parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? ''
+);
+
+// This file allows us to emulate Apache's "mod_rewrite" functionality
+// from the built-in PHP web server. This provides a convenient way to
+// test a Laravel application without having installed a "real" web server.
+if ($uri !== '/' && file_exists(__DIR__.'/public'.$uri)) {
+    return false;
+}
+
+require_once __DIR__.'/public/index.php';
