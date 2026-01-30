@@ -3,10 +3,32 @@
 namespace App\Traits;
 
 use Illuminate\Http\UploadedFile;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Cloudinary\Cloudinary;
+use Cloudinary\Api\Upload\UploadApi;
 
 trait UploadsToCloudinary
 {
+    /**
+     * Get the Cloudinary instance
+     */
+    protected function getCloudinary(): Cloudinary
+    {
+        $cloudinaryUrl = env('CLOUDINARY_URL');
+        
+        if ($cloudinaryUrl) {
+            return new Cloudinary($cloudinaryUrl);
+        }
+
+        // Fallback to individual config values
+        return new Cloudinary([
+            'cloud' => [
+                'cloud_name' => config('cloudinary.cloud_name'),
+                'api_key' => config('cloudinary.api_key'),
+                'api_secret' => config('cloudinary.api_secret'),
+            ],
+        ]);
+    }
+
     /**
      * Upload a file to Cloudinary
      *
@@ -16,7 +38,9 @@ trait UploadsToCloudinary
      */
     protected function uploadToCloudinary(UploadedFile $file, string $folder = 'uploads'): string
     {
-        $result = Cloudinary::upload($file->getRealPath(), [
+        $cloudinary = $this->getCloudinary();
+        
+        $result = $cloudinary->uploadApi()->upload($file->getRealPath(), [
             'folder' => $folder,
             'resource_type' => 'image',
             'transformation' => [
@@ -25,7 +49,7 @@ trait UploadsToCloudinary
             ],
         ]);
 
-        return $result->getSecurePath();
+        return $result['secure_url'];
     }
 
     /**
@@ -41,14 +65,13 @@ trait UploadsToCloudinary
         }
 
         try {
-            // Extract public ID from URL
             $publicId = $this->extractPublicIdFromUrl($url);
             if ($publicId) {
-                Cloudinary::destroy($publicId);
+                $cloudinary = $this->getCloudinary();
+                $cloudinary->uploadApi()->destroy($publicId);
                 return true;
             }
         } catch (\Exception $e) {
-            // Log error but don't fail
             \Log::error('Failed to delete from Cloudinary: ' . $e->getMessage());
         }
 
@@ -67,3 +90,4 @@ trait UploadsToCloudinary
         return null;
     }
 }
+
