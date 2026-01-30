@@ -118,17 +118,61 @@ A `Dockerfile` is also included for containerized deployments:
 - Build: `docker build -t laravel-app .`
 - Run: `docker run -p 8000:80 laravel-app`
 
-### Files Created for Render
+## Deploying to Railway (Recommended)
 
-| File | Purpose |
-|------|---------|
-| `render.yaml` | Render Blueprint configuration |
-| `Dockerfile` | Container deployment option |
-| `render-build.sh` | Build script for Render |
-| `render-start.sh` | Start script for Render |
-| `.env.render` | Production environment template |
+[Railway](https://railway.app) offers native PHP support with a generous free tier.
+
+### Step 1: Push to GitHub
+```bash
+git add .
+git commit -m "Add Railway deployment configuration"
+git push origin main
+```
+
+### Step 2: Create Railway Project
+1. Go to [Railway Dashboard](https://railway.app/dashboard)
+2. Click **"New Project"**
+3. Select **"Deploy from GitHub repo"**
+4. Connect and select your repository
+
+### Step 3: Add PostgreSQL Database
+1. In your Railway project, click **"+ Add Service"**
+2. Select **"Database"** → **"PostgreSQL"**
+3. Railway will automatically link the `DATABASE_URL` to your app
+
+### Step 4: Set Environment Variables
+In Railway dashboard, go to your web service → **Variables** tab:
+```
+APP_NAME=YourAppName
+APP_ENV=production
+APP_DEBUG=false
+APP_KEY=base64:your-generated-key
+APP_URL=https://your-app.up.railway.app
+DB_CONNECTION=pgsql
+LOG_CHANNEL=stderr
+SESSION_DRIVER=cookie
+CACHE_STORE=file
+QUEUE_CONNECTION=sync
+```
+
+> **Note:** Generate APP_KEY with: `php artisan key:generate --show`
+
+### Step 5: Deploy
+Railway will automatically detect the `nixpacks.toml` and deploy your app!
+
+## Deployment Files Summary
+
+| File | Platform | Purpose |
+|------|----------|---------|
+| `Procfile` | Railway | Defines web process |
+| `nixpacks.toml` | Railway | Build configuration |
+| `.env.railway` | Railway | Environment template |
+| `render.yaml` | Render | Blueprint configuration |
+| `Dockerfile` | Any | Container deployment |
+| `render-build.sh` | Render | Build script |
+| `render-start.sh` | Render | Start script |
+| `.env.render` | Render | Environment template |
 
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-
