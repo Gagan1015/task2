@@ -30,7 +30,7 @@ trait UploadsToCloudinary
     }
 
     /**
-     * Upload a file to Cloudinary
+     * Upload a file to Cloudinary with optimizations for speed
      *
      * @param UploadedFile $file
      * @param string $folder
@@ -40,14 +40,27 @@ trait UploadsToCloudinary
     {
         $cloudinary = $this->getCloudinary();
         
-        $result = $cloudinary->uploadApi()->upload($file->getRealPath(), [
+        // Optimize upload options for speed
+        $options = [
             'folder' => $folder,
             'resource_type' => 'image',
+            'timeout' => 60,
+            // Use eager transformation to process asynchronously
+            'eager_async' => true,
+            'eager' => [
+                ['width' => 1200, 'crop' => 'limit', 'quality' => 'auto', 'fetch_format' => 'auto']
+            ],
+            // Limit the image size during upload for faster processing
             'transformation' => [
-                'quality' => 'auto',
+                'width' => 1920,
+                'height' => 1080,
+                'crop' => 'limit',
+                'quality' => 'auto:good',
                 'fetch_format' => 'auto',
             ],
-        ]);
+        ];
+        
+        $result = $cloudinary->uploadApi()->upload($file->getRealPath(), $options);
 
         return $result['secure_url'];
     }
