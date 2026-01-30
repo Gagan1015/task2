@@ -1,0 +1,48 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Development
+.env
+.env.backup
+.env.local
+.env.render
+.phpunit.result.cache
+phpunit.xml
+
+# IDE
+.idea
+.vscode
+.fleet
+.nova
+.zed
+
+# Dependencies (will be installed during build)
+node_modules
+vendor
+
+# Build artifacts
+public/build
+public/hot
+
+# Storage (runtime data)
+storage/*.key
+storage/pail
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+
+# Documentation
+README.md
+docs
+
+# Tests
+tests
+.phpunit.cache
+
+# Other
+Thumbs.db
+.DS_Store
+*.log
