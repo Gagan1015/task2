@@ -38,7 +38,7 @@
                             <td class="px-6 py-4">
                                 <div class="w-20 h-12 bg-gray-100 rounded-lg overflow-hidden">
                                     @if ($slide->background_image)
-                                        <img src="{{ Storage::url($slide->background_image) }}" alt="{{ $slide->title }}" class="w-full h-full object-cover">
+                                        <img src="{{ imageUrl($slide->background_image) }}" alt="{{ $slide->title }}" class="w-full h-full object-cover">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center text-gray-400">
                                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14"/></svg>

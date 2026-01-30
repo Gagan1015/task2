@@ -51,7 +51,7 @@
                 <label for="image" class="block text-sm font-medium text-gray-700 mb-2">Featured Image</label>
                 <input type="file" id="image" name="image" accept="image/*" class="w-full px-4 py-2.5 rounded-lg border border-gray-300">
                 @if(isset($article) && $article->image)
-                    <img src="{{ Storage::url($article->image) }}" alt="Current" class="w-32 h-20 object-cover rounded mt-2">
+                    <img src="{{ imageUrl($article->image) }}" alt="Current" class="w-32 h-20 object-cover rounded mt-2">
                 @endif
             </div>
 

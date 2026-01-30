@@ -109,7 +109,7 @@
                     <input type="file" id="image" name="image" accept="image/*" class="hidden" onchange="previewImage(this, 'imagePreview')">
                     <label for="image" class="cursor-pointer">
                         <div id="imagePreview" class="{{ $car->image ? '' : 'hidden' }} mb-3">
-                            <img src="{{ $car->image ? Storage::url($car->image) : '' }}" alt="Preview" class="w-full max-w-md mx-auto h-48 object-contain rounded">
+                            <img src="{{ $car->image ? imageUrl($car->image) : '' }}" alt="Preview" class="w-full max-w-md mx-auto h-48 object-contain rounded">
                         </div>
                         <div id="imageUploadText" class="{{ $car->image ? 'hidden' : '' }}">
                             <svg class="w-10 h-10 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16"/></svg>

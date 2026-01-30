@@ -30,7 +30,7 @@
                 <label for="logo" class="block text-sm font-medium text-gray-700 mb-2">Logo</label>
                 <input type="file" id="logo" name="logo" accept="image/*" class="w-full px-4 py-2.5 rounded-lg border border-gray-300">
                 @if(isset($brand) && $brand->logo)
-                    <img src="{{ Storage::url($brand->logo) }}" alt="Current logo" class="w-16 h-16 object-contain mt-2">
+                    <img src="{{ imageUrl($brand->logo) }}" alt="Current logo" class="w-16 h-16 object-contain mt-2">
                 @endif
             </div>
 

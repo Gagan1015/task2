@@ -71,7 +71,7 @@
                     <div class="border border-gray-100 rounded-xl overflow-hidden hover:shadow-lg transition-shadow group">
                         <div class="aspect-[4/3] bg-gray-100 relative overflow-hidden">
                             @if ($car->image)
-                                <img src="{{ Storage::url($car->image) }}" alt="{{ $car->name }}" class="w-full h-full object-cover">
+                                <img src="{{ imageUrl($car->image) }}" alt="{{ $car->name }}" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-gray-400">
                                     <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9"/></svg>

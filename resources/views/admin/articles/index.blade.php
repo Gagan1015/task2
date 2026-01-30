@@ -39,7 +39,7 @@
                     <div class="p-4 flex items-start gap-4 hover:bg-gray-50">
                         <div class="w-24 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                             @if ($article->image)
-                                <img src="{{ Storage::url($article->image) }}" alt="{{ $article->title }}" class="w-full h-full object-cover">
+                                <img src="{{ imageUrl($article->image) }}" alt="{{ $article->title }}" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-gray-400">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1"/></svg>

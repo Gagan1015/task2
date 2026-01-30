@@ -21,7 +21,7 @@
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 p-4">
                 @foreach ($stories as $story)
                     <div class="relative rounded-xl overflow-hidden group aspect-[3/4]">
-                        <img src="{{ Storage::url($story->image) }}" alt="{{ $story->title }}" class="w-full h-full object-cover">
+                        <img src="{{ imageUrl($story->image) }}" alt="{{ $story->title }}" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
                         <div class="absolute bottom-0 left-0 right-0 p-3">
                             <p class="text-white text-sm font-medium line-clamp-2">{{ $story->title }}</p>

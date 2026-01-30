@@ -30,7 +30,7 @@
                 <label for="image" class="block text-sm font-medium text-gray-700 mb-2">Image {{ isset($story) ? '' : '<span class="text-red-500">*</span>' }}</label>
                 <input type="file" id="image" name="image" accept="image/*" class="w-full px-4 py-2.5 rounded-lg border border-gray-300" {{ isset($story) ? '' : 'required' }}>
                 @if(isset($story) && $story->image)
-                    <img src="{{ Storage::url($story->image) }}" alt="Current" class="w-32 h-40 object-cover rounded mt-2">
+                    <img src="{{ imageUrl($story->image) }}" alt="Current" class="w-32 h-40 object-cover rounded mt-2">
                 @endif
             </div>
 

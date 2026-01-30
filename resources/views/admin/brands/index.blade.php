@@ -23,7 +23,7 @@
                     <div class="border border-gray-100 rounded-xl p-4 text-center hover:shadow-lg transition-shadow group relative">
                         <div class="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-3">
                             @if ($brand->logo)
-                                <img src="{{ Storage::url($brand->logo) }}" alt="{{ $brand->name }}" class="w-12 h-12 object-contain">
+                                <img src="{{ imageUrl($brand->logo) }}" alt="{{ $brand->name }}" class="w-12 h-12 object-contain">
                             @else
                                 <span class="text-xl font-bold text-gray-600">{{ $brand->logo_text ?: substr($brand->name, 0, 2) }}</span>
                             @endif

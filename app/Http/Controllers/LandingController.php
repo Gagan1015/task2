@@ -11,7 +11,6 @@ use App\Models\NavLink;
 use App\Models\SiteSetting;
 use App\Models\Story;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class LandingController extends Controller
 {
@@ -53,7 +52,7 @@ class LandingController extends Controller
             'id' => (string) $car->id,
             'name' => $car->name,
             'price' => $car->price,
-            'image' => $car->image ? Storage::url($car->image) : 'https://images.unsplash.com/photo-1623962570477-d079d3436034?q=80&w=600',
+            'image' => imageUrl($car->image) ?: 'https://images.unsplash.com/photo-1623962570477-d079d3436034?q=80&w=600',
             'category' => $car->category,
             'tag' => $car->tag,
             'isUpcoming' => $car->is_upcoming,
@@ -75,7 +74,7 @@ class LandingController extends Controller
             'id' => (string) $car->id,
             'name' => $car->name,
             'price' => $car->price,
-            'image' => $car->image ? Storage::url($car->image) : 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?q=80&w=600',
+            'image' => imageUrl($car->image) ?: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?q=80&w=600',
             'category' => $car->category,
             'tag' => $car->tag ?: 'Electric',
             'isUpcoming' => $car->is_upcoming,
@@ -97,7 +96,7 @@ class LandingController extends Controller
             'id' => (string) $car->id,
             'name' => $car->name,
             'price' => $car->price,
-            'image' => $car->image ? Storage::url($car->image) : 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?q=80&w=600',
+            'image' => imageUrl($car->image) ?: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?q=80&w=600',
             'category' => $car->category,
             'tag' => $car->tag,
             'isUpcoming' => true,
@@ -118,7 +117,7 @@ class LandingController extends Controller
         return $brands->map(fn($brand) => [
             'id' => (string) $brand->id,
             'name' => $brand->name,
-            'logo' => $brand->logo ?: $brand->logo_text ?: strtoupper(substr($brand->name, 0, 1)),
+            'logo' => imageUrl($brand->logo) ?: $brand->logo_text ?: strtoupper(substr($brand->name, 0, 1)),
         ])->toArray();
     }
 
@@ -136,7 +135,7 @@ class LandingController extends Controller
         return $stories->map(fn($story) => [
             'id' => (string) $story->id,
             'title' => $story->title,
-            'image' => $story->image ? Storage::url($story->image) : 'https://images.unsplash.com/photo-1600712242805-5f79949501d2?q=80&w=800',
+            'image' => imageUrl($story->image) ?: 'https://images.unsplash.com/photo-1600712242805-5f79949501d2?q=80&w=800',
             'date' => $story->formattedDate,
         ])->toArray();
     }
@@ -180,7 +179,7 @@ class LandingController extends Controller
             'excerpt' => $article->excerpt,
             'date' => $article->relativeDate,
             'views' => $article->formattedViews,
-            'image' => $article->image ? Storage::url($article->image) : 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?q=80&w=600',
+            'image' => imageUrl($article->image) ?: 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?q=80&w=600',
             'category' => $article->category,
         ])->toArray();
     }
@@ -201,7 +200,7 @@ class LandingController extends Controller
             'title' => $slide->title,
             'tag' => $slide->tag,
             'subtitle' => $slide->subtitle,
-            'bgImage' => $slide->background_image ? Storage::url($slide->background_image) : 'https://images.unsplash.com/photo-1533158307587-828f0a76ef93?q=80&w=2000',
+            'bgImage' => imageUrl($slide->background_image) ?: 'https://images.unsplash.com/photo-1533158307587-828f0a76ef93?q=80&w=2000',
             'buttonText' => $slide->button_text ?? 'Know More',
             'buttonLink' => $slide->button_link ?? '#',
         ])->toArray();
@@ -247,12 +246,12 @@ class LandingController extends Controller
                 'carA' => [
                     'name' => $carA->name,
                     'price' => $carA->price,
-                    'image' => $carA->image ? Storage::url($carA->image) : 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=400',
+                    'image' => imageUrl($carA->image) ?: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=400',
                 ],
                 'carB' => [
                     'name' => $carB->name,
                     'price' => $carB->price,
-                    'image' => $carB->image ? Storage::url($carB->image) : 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=400',
+                    'image' => imageUrl($carB->image) ?: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=400',
                 ],
             ];
         }
