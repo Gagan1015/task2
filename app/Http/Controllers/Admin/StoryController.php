@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Story;
+use App\Traits\UploadsToCloudinary;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class StoryController extends Controller
 {
+    use UploadsToCloudinary;
     public function index()
     {
         $stories = Story::ordered()->paginate(12);
@@ -31,7 +32,7 @@ class StoryController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        $validated['image'] = $request->file('image')->store('stories', 'public');
+        $validated['image'] = $this->uploadToCloudinary($request->file('image'), 'stories');
         $validated['is_active'] = $request->boolean('is_active');
         $validated['sort_order'] = $validated['sort_order'] ?? Story::max('sort_order') + 1;
 
@@ -62,8 +63,8 @@ class StoryController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            Storage::disk('public')->delete($story->image);
-            $validated['image'] = $request->file('image')->store('stories', 'public');
+            $this->deleteFromCloudinary($story->image);
+            $validated['image'] = $this->uploadToCloudinary($request->file('image'), 'stories');
         }
 
         $validated['is_active'] = $request->boolean('is_active');
@@ -74,7 +75,7 @@ class StoryController extends Controller
 
     public function destroy(Story $story)
     {
-        Storage::disk('public')->delete($story->image);
+        $this->deleteFromCloudinary($story->image);
         $story->delete();
         return redirect()->route('admin.stories.index')->with('success', 'Story deleted successfully.');
     }

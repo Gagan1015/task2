@@ -4,12 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Article;
+use App\Traits\UploadsToCloudinary;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ArticleController extends Controller
 {
+    use UploadsToCloudinary;
     public function index(Request $request)
     {
         $query = Article::query();
@@ -48,7 +49,7 @@ class ArticleController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('articles', 'public');
+            $validated['image'] = $this->uploadToCloudinary($request->file('image'), 'articles');
         }
 
         $validated['slug'] = $validated['slug'] ?: Str::slug($validated['title']);
@@ -86,8 +87,8 @@ class ArticleController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            if ($article->image) Storage::disk('public')->delete($article->image);
-            $validated['image'] = $request->file('image')->store('articles', 'public');
+            $this->deleteFromCloudinary($article->image);
+            $validated['image'] = $this->uploadToCloudinary($request->file('image'), 'articles');
         }
 
         $validated['is_featured'] = $request->boolean('is_featured');
@@ -99,7 +100,7 @@ class ArticleController extends Controller
 
     public function destroy(Article $article)
     {
-        if ($article->image) Storage::disk('public')->delete($article->image);
+        $this->deleteFromCloudinary($article->image);
         $article->delete();
         return redirect()->route('admin.articles.index')->with('success', 'Article deleted successfully.');
     }

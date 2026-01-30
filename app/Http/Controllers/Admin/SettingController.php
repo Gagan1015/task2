@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\SiteSetting;
+use App\Traits\UploadsToCloudinary;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
+    use UploadsToCloudinary;
     /**
      * General settings page
      */
@@ -40,10 +41,8 @@ class SettingController extends Controller
 
         if ($request->hasFile('logo')) {
             $oldLogo = SiteSetting::get('site_logo');
-            if ($oldLogo) {
-                Storage::disk('public')->delete($oldLogo);
-            }
-            $path = $request->file('logo')->store('settings', 'public');
+            $this->deleteFromCloudinary($oldLogo);
+            $path = $this->uploadToCloudinary($request->file('logo'), 'settings');
             SiteSetting::set('site_logo', $path, 'image', 'general');
         }
 

@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Car;
+use App\Traits\UploadsToCloudinary;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class CarController extends Controller
 {
+    use UploadsToCloudinary;
     /**
      * Display a listing of the resource.
      */
@@ -70,7 +71,7 @@ class CarController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('cars', 'public');
+            $validated['image'] = $this->uploadToCloudinary($request->file('image'), 'cars');
         }
 
         $validated['is_upcoming'] = $request->boolean('is_upcoming');
@@ -123,10 +124,8 @@ class CarController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            if ($car->image) {
-                Storage::disk('public')->delete($car->image);
-            }
-            $validated['image'] = $request->file('image')->store('cars', 'public');
+            $this->deleteFromCloudinary($car->image);
+            $validated['image'] = $this->uploadToCloudinary($request->file('image'), 'cars');
         }
 
         $validated['is_upcoming'] = $request->boolean('is_upcoming');
@@ -144,9 +143,7 @@ class CarController extends Controller
      */
     public function destroy(Car $car)
     {
-        if ($car->image) {
-            Storage::disk('public')->delete($car->image);
-        }
+        $this->deleteFromCloudinary($car->image);
 
         $car->delete();
 

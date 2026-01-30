@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use App\Traits\UploadsToCloudinary;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class BrandController extends Controller
 {
+    use UploadsToCloudinary;
     public function index()
     {
         $brands = Brand::ordered()->paginate(12);
@@ -32,7 +33,7 @@ class BrandController extends Controller
         ]);
 
         if ($request->hasFile('logo')) {
-            $validated['logo'] = $request->file('logo')->store('brands', 'public');
+            $validated['logo'] = $this->uploadToCloudinary($request->file('logo'), 'brands');
         }
 
         $validated['is_active'] = $request->boolean('is_active');
@@ -65,8 +66,8 @@ class BrandController extends Controller
         ]);
 
         if ($request->hasFile('logo')) {
-            if ($brand->logo) Storage::disk('public')->delete($brand->logo);
-            $validated['logo'] = $request->file('logo')->store('brands', 'public');
+            $this->deleteFromCloudinary($brand->logo);
+            $validated['logo'] = $this->uploadToCloudinary($request->file('logo'), 'brands');
         }
 
         $validated['is_active'] = $request->boolean('is_active');
@@ -77,7 +78,7 @@ class BrandController extends Controller
 
     public function destroy(Brand $brand)
     {
-        if ($brand->logo) Storage::disk('public')->delete($brand->logo);
+        $this->deleteFromCloudinary($brand->logo);
         $brand->delete();
         return redirect()->route('admin.brands.index')->with('success', 'Brand deleted successfully.');
     }

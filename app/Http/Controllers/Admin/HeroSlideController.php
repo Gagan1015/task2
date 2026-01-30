@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\HeroSlide;
+use App\Traits\UploadsToCloudinary;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class HeroSlideController extends Controller
 {
+    use UploadsToCloudinary;
+
     /**
      * Display a listing of the resource.
      */
@@ -42,9 +44,9 @@ class HeroSlideController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        // Handle background image upload
+        // Handle background image upload to Cloudinary
         if ($request->hasFile('background_image')) {
-            $validated['background_image'] = $request->file('background_image')->store('hero-slides', 'public');
+            $validated['background_image'] = $this->uploadToCloudinary($request->file('background_image'), 'hero-slides');
         }
 
         $validated['is_active'] = $request->boolean('is_active');
@@ -88,13 +90,11 @@ class HeroSlideController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        // Handle background image upload
+        // Handle background image upload to Cloudinary
         if ($request->hasFile('background_image')) {
-            // Delete old background
-            if ($heroSlide->background_image) {
-                Storage::disk('public')->delete($heroSlide->background_image);
-            }
-            $validated['background_image'] = $request->file('background_image')->store('hero-slides', 'public');
+            // Delete old background from Cloudinary
+            $this->deleteFromCloudinary($heroSlide->background_image);
+            $validated['background_image'] = $this->uploadToCloudinary($request->file('background_image'), 'hero-slides');
         }
 
         $validated['is_active'] = $request->boolean('is_active');
@@ -110,10 +110,8 @@ class HeroSlideController extends Controller
      */
     public function destroy(HeroSlide $heroSlide)
     {
-        // Delete associated background image
-        if ($heroSlide->background_image) {
-            Storage::disk('public')->delete($heroSlide->background_image);
-        }
+        // Delete associated background image from Cloudinary
+        $this->deleteFromCloudinary($heroSlide->background_image);
 
         $heroSlide->delete();
 
@@ -138,3 +136,4 @@ class HeroSlideController extends Controller
         return response()->json(['success' => true]);
     }
 }
+
