@@ -54,125 +54,94 @@ In order to ensure that the Laravel community is welcoming to all, please review
 
 If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-## Deploying to Render
+## Deploying to Heroku
 
-This project is configured for deployment to [Render](https://render.com) with PostgreSQL database.
+This project is configured for deployment to [Heroku](https://heroku.com) with MySQL database.
 
-### Option 1: Using Render Blueprint (Recommended)
+### Prerequisites
 
-1. **Push your code to GitHub**
-   ```bash
-   git add .
-   git commit -m "Add Render deployment configuration"
-   git push origin main
-   ```
+1. [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) installed
+2. A Heroku account
+3. Git repository initialized
 
-2. **Deploy with Blueprint**
-   - Go to [Render Dashboard](https://dashboard.render.com)
-   - Click "New" → "Blueprint"
-   - Connect your GitHub repository
-   - Render will automatically detect the `render.yaml` file and create:
-     - A PostgreSQL database (`laravel-postgres`)
-     - A web service (`laravel-app`)
+### Step 1: Create Heroku App
 
-3. **Generate APP_KEY**
-   After deployment, generate a new APP_KEY:
-   ```bash
-   php artisan key:generate --show
-   ```
-   Copy the generated key and add it to your Render environment variables.
-
-### Option 2: Manual Setup
-
-1. **Create PostgreSQL Database**
-   - Go to Render Dashboard → New → PostgreSQL
-   - Note the connection string (DATABASE_URL)
-
-2. **Create Web Service**
-   - Go to Render Dashboard → New → Web Service
-   - Connect your GitHub repository
-   - Configure:
-     - **Runtime**: PHP
-     - **Build Command**: `./render-build.sh`
-     - **Start Command**: `./render-start.sh`
-
-3. **Set Environment Variables**
-   Add these to your Render web service:
-   ```
-   APP_NAME=YourAppName
-   APP_ENV=production
-   APP_DEBUG=false
-   APP_KEY=base64:your-generated-key
-   APP_URL=https://your-app.onrender.com
-   DB_CONNECTION=pgsql
-   DATABASE_URL=<from-your-postgres-database>
-   LOG_CHANNEL=stderr
-   SESSION_DRIVER=cookie
-   CACHE_STORE=file
-   QUEUE_CONNECTION=sync
-   ```
-
-### Docker Deployment
-
-A `Dockerfile` is also included for containerized deployments:
-- Build: `docker build -t laravel-app .`
-- Run: `docker run -p 8000:80 laravel-app`
-
-## Deploying to Railway (Recommended)
-
-[Railway](https://railway.app) offers native PHP support with a generous free tier.
-
-### Step 1: Push to GitHub
 ```bash
-git add .
-git commit -m "Add Railway deployment configuration"
-git push origin main
+heroku create your-app-name
 ```
 
-### Step 2: Create Railway Project
-1. Go to [Railway Dashboard](https://railway.app/dashboard)
-2. Click **"New Project"**
-3. Select **"Deploy from GitHub repo"**
-4. Connect and select your repository
+### Step 2: Add MySQL Database
 
-### Step 3: Add PostgreSQL Database
-1. In your Railway project, click **"+ Add Service"**
-2. Select **"Database"** → **"PostgreSQL"**
-3. Railway will automatically link the `DATABASE_URL` to your app
-
-### Step 4: Set Environment Variables
-In Railway dashboard, go to your web service → **Variables** tab:
-```
-APP_NAME=YourAppName
-APP_ENV=production
-APP_DEBUG=false
-APP_KEY=base64:your-generated-key
-APP_URL=https://your-app.up.railway.app
-DB_CONNECTION=pgsql
-LOG_CHANNEL=stderr
-SESSION_DRIVER=cookie
-CACHE_STORE=file
-QUEUE_CONNECTION=sync
+```bash
+heroku addons:create jawsdb:kitefin
 ```
 
-> **Note:** Generate APP_KEY with: `php artisan key:generate --show`
+This adds a free MySQL database. Heroku will automatically set the `JAWSDB_URL` environment variable.
+
+### Step 3: Set Environment Variables
+
+```bash
+# Generate APP_KEY
+php artisan key:generate --show
+
+# Set environment variables
+heroku config:set APP_NAME="Your App Name"
+heroku config:set APP_ENV=production
+heroku config:set APP_DEBUG=false
+heroku config:set APP_KEY=base64:your-generated-key
+heroku config:set APP_URL=https://your-app-name.herokuapp.com
+heroku config:set LOG_CHANNEL=errorlog
+heroku config:set SESSION_DRIVER=cookie
+heroku config:set CACHE_STORE=file
+heroku config:set QUEUE_CONNECTION=sync
+```
+
+### Step 4: Configure Database
+
+The `JAWSDB_URL` is automatically parsed by Laravel. Make sure your `.env` uses:
+
+```
+DB_CONNECTION=mysql
+```
 
 ### Step 5: Deploy
-Railway will automatically detect the `nixpacks.toml` and deploy your app!
 
-## Deployment Files Summary
+```bash
+git add .
+git commit -m "Ready for Heroku deployment"
+git push heroku main
+```
 
-| File | Platform | Purpose |
-|------|----------|---------|
-| `Procfile` | Railway | Defines web process |
-| `nixpacks.toml` | Railway | Build configuration |
-| `.env.railway` | Railway | Environment template |
-| `render.yaml` | Render | Blueprint configuration |
-| `Dockerfile` | Any | Container deployment |
-| `render-build.sh` | Render | Build script |
-| `render-start.sh` | Render | Start script |
-| `.env.render` | Render | Environment template |
+### Step 6: Run Migrations
+
+```bash
+heroku run php artisan migrate --force
+```
+
+### Deployment Files
+
+| File | Purpose |
+|------|---------|
+| `Procfile` | Defines web process using Apache |
+| `composer.json` | PHP dependencies and extensions |
+
+### Useful Heroku Commands
+
+```bash
+# View logs
+heroku logs --tail
+
+# Run artisan commands
+heroku run php artisan <command>
+
+# Open app in browser
+heroku open
+
+# Check config vars
+heroku config
+```
 
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
